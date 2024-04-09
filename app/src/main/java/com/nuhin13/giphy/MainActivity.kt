@@ -6,17 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.nuhin13.giphy.features.giphylist.vm.GiphyListViewModel
 import com.nuhin13.giphy.ui.navigation.SetupNavGraph
-import com.nuhin13.giphy.ui.navigation.rememberWindowSize
 import com.nuhin13.giphy.ui.theme.GIPHYTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,31 +33,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(
-    name: String,
-    modifier: Modifier = Modifier,
-    postViewModel: GiphyListViewModel = hiltViewModel()
-) {
-
-    val state = postViewModel.uiState.collectAsState()
-    val itemsList = state.value.giphyList
-    val status = state.value.status
-
-    LaunchedEffect(Unit) {
-        postViewModel.getGiphyList("bugi")
-    }
-
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     GIPHYTheme {
-        Greeting("Android")
+       //Greeting("Android")
     }
 }
