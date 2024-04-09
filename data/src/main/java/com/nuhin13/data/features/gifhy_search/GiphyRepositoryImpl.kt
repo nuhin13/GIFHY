@@ -3,6 +3,7 @@ package com.nuhin13.data.features.gifhy_search
 import com.nuhin13.data.features.gifhy_search.datasource.GiphyDataSource
 import com.nuhin13.domain.feature.giphy_search.entity.GiphyItem
 import com.nuhin13.domain.feature.giphy_search.entity.GiphyList
+import com.nuhin13.domain.feature.giphy_search.entity.User
 import com.nuhin13.domain.feature.giphy_search.repository.GiphyRepository
 import com.nuhin13.domain.util.DataResult
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +26,14 @@ class GiphyRepositoryImpl @Inject constructor(private val giphyDataSource: Giphy
                         for (data in apiResponse.data!!.data) {
                             val giphyItem = GiphyItem(
                                 id = data.id, title = data.title,
-                                type = data.type, images = data.images.original.url, url = data.url)
+                                type = data.type, images = data.images.original.url, url = data.url,
+                                user = data.user?.let {
+                                    User(
+                                        username = it.username ?: "",
+                                        profileImage = it.avatar_url ?: ""
+                                    )
+                                }
+                            )
 
                             giphyItemList.add(giphyItem)
                         }

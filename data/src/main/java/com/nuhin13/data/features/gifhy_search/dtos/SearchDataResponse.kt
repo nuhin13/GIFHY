@@ -21,6 +21,6 @@ data class SearchDataResponse(
     val trending_datetime: String,
     val type: String,
     val url: String,
-    val user: UserResponse,
+    val user: UserResponse?,
     val username: String
 )

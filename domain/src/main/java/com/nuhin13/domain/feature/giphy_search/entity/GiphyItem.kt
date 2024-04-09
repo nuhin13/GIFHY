@@ -5,5 +5,11 @@ data class GiphyItem(
     val id: String,
     val url: String?,
     val title: String?,
-    val images: String?
+    val images: String?,
+    val user: User?,
+)
+
+data class User(
+    val username: String?,
+    val profileImage: String?
 )
