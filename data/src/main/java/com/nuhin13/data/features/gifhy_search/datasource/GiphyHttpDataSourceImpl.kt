@@ -8,14 +8,14 @@ import javax.inject.Inject
 class GiphyHttpDataSourceImpl @Inject constructor(private val apiService: ApiService) :
     GiphyDataSource {
 
-    override suspend fun getGiphyList(query: String?): GiphySearchResponse {
+    override suspend fun getGiphyList(query: String, limit:Int): GiphySearchResponse {
         return apiService.searchGiphyList(
             ApiConstants.API_KEY,
-            10,
+            limit,
             0,
             "g",
             "en",
-            query ?: ""
+            query
         )
     }
 }

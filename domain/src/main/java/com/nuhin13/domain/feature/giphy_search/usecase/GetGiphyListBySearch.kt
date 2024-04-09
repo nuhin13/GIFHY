@@ -4,8 +4,8 @@ import com.nuhin13.domain.feature.giphy_search.entity.GiphyList
 import com.nuhin13.domain.feature.giphy_search.repository.GiphyRepository
 import javax.inject.Inject
 
-class GetGiphyListBySearch @Inject constructor(private val userRepo: GiphyRepository) {
-    suspend fun getSearchGiphyList(query: String): GiphyList {
-        return userRepo.searchGiphyList(query)
+class GetGiphyListBySearch @Inject constructor(private val giphyRepo: GiphyRepository) {
+    suspend fun getSearchGiphyList(query: String, limit:Int): GiphyList {
+        return giphyRepo.searchGiphyList(query, limit)
     }
 }

@@ -11,13 +11,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class GiphyListViewModel @Inject constructor(private val getGiphyList: GetGiphyListBySearch) : ViewModel() {
 
     data class GiphyListUiState(
         val status: DataStatus = DataStatus.LOADING,
-        val postList: GiphyList = GiphyList(arrayListOf())
+        val giphyList: GiphyList = GiphyList(data = arrayListOf())
     )
 
     private val _uiState: MutableStateFlow<GiphyListUiState> = MutableStateFlow(GiphyListUiState())
@@ -26,10 +25,13 @@ class GiphyListViewModel @Inject constructor(private val getGiphyList: GetGiphyL
     fun getGiphyList(query: String) {
         viewModelScope.launch {
             try {
+                val results =  getGiphyList.getSearchGiphyList(query, 25)
 
-                getGiphyList.getSearchGiphyList(query)
+                _uiState.value = _uiState.value.copy(giphyList = results)
 
-//                getGiphyList.getSearchGiphyList("bugi").collect {
+
+
+//                getGiphyList.getSearchGiphyList("bugi").data.collect {
 //                    _uiState.value = GiphyListUiState(
 //                        DataStatus.SUCCESS,
 //                        GiphyList(arrayListOf())

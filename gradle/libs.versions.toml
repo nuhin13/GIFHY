@@ -1,4 +1,5 @@
 [versions]
+coilGif = "2.6.0"
 coreKtx = "1.12.0"
 
 lifecycleRuntimeKtx = "2.7.0"
@@ -31,6 +32,7 @@ espressoCore = "3.5.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilGif" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

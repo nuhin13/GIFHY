@@ -13,7 +13,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.nuhin13.giphy.features.giphylist.vm.GiphyListViewModel
+import com.nuhin13.giphy.ui.navigation.SetupNavGraph
+import com.nuhin13.giphy.ui.navigation.rememberWindowSize
 import com.nuhin13.giphy.ui.theme.GIPHYTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,12 +26,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GIPHYTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    val navController = rememberNavController()
+
+                    SetupNavGraph(navController = navController)
                 }
             }
         }
@@ -43,7 +47,7 @@ fun Greeting(
 ) {
 
     val state = postViewModel.uiState.collectAsState()
-    val itemsList = state.value.postList
+    val itemsList = state.value.giphyList
     val status = state.value.status
 
     LaunchedEffect(Unit) {
