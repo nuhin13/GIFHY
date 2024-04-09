@@ -4,33 +4,48 @@ import com.nuhin13.data.features.gifhy_search.datasource.GiphyDataSource
 import com.nuhin13.domain.feature.giphy_search.entity.GiphyItem
 import com.nuhin13.domain.feature.giphy_search.entity.GiphyList
 import com.nuhin13.domain.feature.giphy_search.repository.GiphyRepository
+import com.nuhin13.domain.util.DataResult
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.reflect.typeOf
 
-class GiphyRepositoryImpl @Inject constructor(
-    private val giphyDataSource: GiphyDataSource
-) : GiphyRepository {
+class GiphyRepositoryImpl @Inject constructor(private val giphyDataSource: GiphyDataSource) :
+    GiphyRepository {
 
-    override suspend fun searchGiphyList(query: String, limit:Int): GiphyList {
-        val response = giphyDataSource.getGiphyList(query, limit)
+    override suspend fun searchGiphyList(query: String, limit: Int): Flow<DataResult<GiphyList>> {
 
-        val giphyList: GiphyList
         val giphyItemList: ArrayList<GiphyItem> = arrayListOf()
 
-        for (data in response.data) {
-            val giphyItem = GiphyItem(
-                id = data.id,
-                title = data.title,
-                type = data.type,
-                images = data.images.preview_gif.url,
-                url = data.url
-            )
+        return giphyDataSource.getGiphyList(query, limit).map { apiResponse ->
+            when (apiResponse) {
+                is DataResult.Success -> {
+                    if (apiResponse.data!!.data.isEmpty()) {
+                        DataResult.Error("No data found")
+                    } else {
+                        for (data in apiResponse.data!!.data) {
+                            val giphyItem = GiphyItem(
+                                id = data.id, title = data.title,
+                                type = data.type, images = data.images.original.url, url = data.url)
 
-            giphyItemList.add(giphyItem)
+                            giphyItemList.add(giphyItem)
+                        }
+
+                        DataResult.Success(GiphyList(giphyItemList))
+                    }
+                }
+
+                is DataResult.Error -> {
+                    DataResult.Error("No data found")
+                }
+
+                is DataResult.Loading -> {
+                    DataResult.Loading(null, true)
+                }
+
+                else -> {
+                    DataResult.Error("Something went wrong")
+                }
+            }
         }
-
-        giphyList = GiphyList(giphyItemList)
-
-        return giphyList
     }
 }

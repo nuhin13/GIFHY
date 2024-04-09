@@ -11,11 +11,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class GiphyListStatus {
+    INITIAL,
+    LOADING,
+    SUCCESS,
+    ERROR,
+    NO_DATA
+}
+
 @HiltViewModel
-class GiphyListViewModel @Inject constructor(private val getGiphyList: GetGiphyListBySearch) : ViewModel() {
+class GiphyListViewModel @Inject constructor(private val getGiphyList: GetGiphyListBySearch) :
+    ViewModel() {
 
     data class GiphyListUiState(
-        val status: DataStatus = DataStatus.LOADING,
+        val status: GiphyListStatus = GiphyListStatus.INITIAL,
+        val statusMessage: String = "Please enter a search query",
         val giphyList: GiphyList = GiphyList(data = arrayListOf())
     )
 
@@ -23,23 +33,47 @@ class GiphyListViewModel @Inject constructor(private val getGiphyList: GetGiphyL
     val uiState = _uiState.asStateFlow()
 
     fun getGiphyList(query: String) {
+        if (query.isEmpty()) {
+            updateGiphyList(
+                GiphyListStatus.INITIAL,
+                message = "Please enter a search query"
+            )
+            return
+        }
+
         viewModelScope.launch {
             try {
-                val results =  getGiphyList.getSearchGiphyList(query, 25)
+                getGiphyList.getSearchGiphyList(query, 25).collect {
+                    when (it.status) {
+                        DataStatus.LOADING -> updateGiphyList(
+                            GiphyListStatus.LOADING, "Loading..."
+                        )
 
-                _uiState.value = _uiState.value.copy(giphyList = results)
+                        DataStatus.ERROR -> updateGiphyList(GiphyListStatus.NO_DATA, it.message)
 
+                        DataStatus.SUCCESS -> updateGiphyList(
+                            GiphyListStatus.SUCCESS,
+                            it.message,
+                            it.data
+                        )
+                    }
 
-
-//                getGiphyList.getSearchGiphyList("bugi").data.collect {
-//                    _uiState.value = GiphyListUiState(
-//                        DataStatus.SUCCESS,
-//                        GiphyList(arrayListOf())
-//                    )
-//                }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
+                updateGiphyList(GiphyListStatus.ERROR)
             }
         }
+    }
+
+    private fun updateGiphyList(
+        status: GiphyListStatus, message: String? = null,
+        giphyList: GiphyList? = null
+    ) {
+        _uiState.value = GiphyListUiState(
+            status,
+            message ?: "Something went wrong",
+            giphyList ?: GiphyList(arrayListOf())
+        )
     }
 }

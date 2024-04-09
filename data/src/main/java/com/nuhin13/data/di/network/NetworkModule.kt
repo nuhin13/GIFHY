@@ -18,26 +18,12 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-//        var token: String? = null
-
-        // TODO Refactor this code
-//        GlobalScope.launch {
-//            if (pref.getJson(PrefConstant.USER_INFO).isNotEmpty()) {
-//                token = Gson().fromJson(
-//                    pref.getJson(PrefConstant.USER_INFO),
-//                    UserInfo::class.java
-//                )?.token?.appId
-//            }
-//
-//            println("token: $token")
-//        }
 
         val builder = OkHttpClient.Builder()
             .readTimeout(60, TimeUnit.SECONDS)
             .connectTimeout(60, TimeUnit.SECONDS)
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-//                    .addHeader("app-id", token.toString())
                     .build()
                 chain.proceed(request)
             }
