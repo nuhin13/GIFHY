@@ -4,7 +4,7 @@ The app is built using Jetpack Compose + MVVM + Clean Architecture Pattern with 
 
 
 https://github.com/nuhin13/GIFHY/assets/10963861/bfc459a0-9575-4f6f-901a-65d329313c26
-or
+
 https://streamable.com/304l6l
 
 
